@@ -5,11 +5,11 @@ GMPDIR=/usr/local
 # Vos sources C, par exemple : SRC=source.c
 SRC=
 # Vos sources C++, par exemple : SRCXX=source2.cxx
-SRCXX=gencle.cpp
+SRCXX=gencle.cpp main.cpp
 # Vos executables C, par exemple : EXEC=progc
 EXEC=
 # Vos executables C++, par exemple : EXECXX=progcxx
-EXECXX=gencle
+EXECXX=gencle main
 ####################################################
 # ne pas toucher
 INCDIR=-I${GMPDIR}/include
@@ -31,6 +31,10 @@ all: $(EXECXX)
 # A dupliquer éventuellement si autres executables
 gencle: $(OBJXX) gencle.cpp
 		$(CXX) -c $(INCDIR) $@.cpp
-		$(LDXX) $@.o $(OBJXX) $(LIBDIR) $(LIBSXX) -o $@
+		$(LDXX) $@.o $@.o $(LIBDIR) $(LIBSXX) -o $@
+
+main: $(OBJXX) main.cpp
+		$(CXX) -c $(INCDIR) $@.cpp
+		$(LDXX) $@.o $@.o $(LIBDIR) $(LIBSXX) -o $@
 clean:
 		rm -f $(EXEC:=.o) $(EXECXX) $(EXECXX:=.o) $(OBJ)
