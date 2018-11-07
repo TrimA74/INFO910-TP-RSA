@@ -7,6 +7,9 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <time.h>
+#include <iostream>
+
+using namespace std;
 
 unsigned int generateSeed(){
     struct timeval tv;
@@ -30,15 +33,18 @@ void generateRandom(mpz_t result, mp_bitcnt_t nbBits){
     mpz_init(result);
     mpz_urandomb(result, state, nbBits);
 }
-void generateRandom(mpz_t result, mpz_t minBitsZ, mpz_t maxBitsZ){
+
+void generateRandom(mpz_t result, mpz_t minBits, mpz_t maxBitsZ){
     //On convertit les mpz en mp_bitcnt_t
-    mp_bitcnt_t minBits = mpz_get_ui(minBitsZ);
     mp_bitcnt_t maxBits = mpz_get_ui(maxBitsZ);
 
-    mpz_t randomMinP, randomMaxP;
-    generateRandom(randomMinP, minBits);
-    generateRandom(randomMaxP, maxBits);
-
-    //Calcul la somme entre min et max
-    mpz_add(result,randomMinP, randomMaxP);
+    mpz_t randomMin, base;
+    mpz_init(randomMin);
+    mpz_init(base);
+    mpz_set_ui(randomMin,0);
+    mpz_set_ui(base,2);
+    mpz_pow_ui(randomMin, base, mpz_get_ui(minBits));
+    while(mpz_cmp(result,randomMin) < 0) {
+        generateRandom(result, maxBits);
+    }
 }

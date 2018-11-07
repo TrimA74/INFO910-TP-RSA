@@ -10,3 +10,6 @@
 .idea
 cmake-build-debug
 *.o
+
+*.pub
+*.priv

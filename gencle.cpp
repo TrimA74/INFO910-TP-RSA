@@ -2,6 +2,7 @@
 // Created by antoine on 23/10/18.
 //
 #include <iostream>
+#include <fstream>
 #include "gmphelper.cpp"
 
 using namespace std;
@@ -63,9 +64,17 @@ int main(int argc, char** argv){
     mpz_sub_ui(p,p,1);
     mpz_sub_ui(q,q,1);
     //tmp = p*q
+
     mpz_mul(tmp,p,q);
-    //TODO generateRandom(a,0,t) ???
-    mpz_invert(b,a,tmp);
+    mpz_set_ui(b,2);
+    mpz_pow_ui(b, b, 16);
+    mpz_add_ui(b,b,1);
+    //b = 2^16 + 1
+
+    mpz_invert(a,b,tmp);
+
+    gmp_printf("a = %Zd\n", a);
+    gmp_printf("b = %Zd\n", b);
 
     //Check
     mpz_mul(tmp2,a,b);
@@ -77,9 +86,33 @@ int main(int argc, char** argv){
     //modN = 1 mod phi(n)
     //tmp2 = a*b
     cout << "# check a*b=1 mod phi(n), a*b=1" << endl;
+    cout << "check a*b=1 mod phi(n) =" << mpz_cmp(tmp2,tmp) << endl;
+    cout << "check a*b=1 =" << mpz_cmp_ui(tmp2,1) << endl;
     if(mpz_cmp(tmp2,tmp) == 1 && mpz_cmp_ui(tmp2,1) == 1){
-        //TODO Write t n p q a b in file.priv
-        //TODO Write n, b, t in file.pub
+        //Write t n p q a b in file.priv
+        ofstream myfile;
+        myfile.open (output + ".priv", ios::out | ios::trunc);
+        if(myfile.is_open()) {
+            myfile << mpz_get_str(NULL, 10, t) << "\n";
+            myfile << mpz_get_str(NULL, 10, n) << "\n";
+            myfile << mpz_get_str(NULL, 10, p) << "\n";
+            myfile << mpz_get_str(NULL, 10, q) << "\n";
+            myfile << mpz_get_str(NULL, 10, a) << "\n";
+            myfile << mpz_get_str(NULL, 10, b) << "\n";
+            myfile << "# Public/private RSA Keys : t n p q a b\n";
+            myfile.close();
+        }
+
+        //Write n, b, t in file.pub
+        ofstream myfile2;
+        myfile2.open (output + ".pub", ios::out | ios::trunc);
+        if(myfile2.is_open()) {
+            myfile2 << mpz_get_str(NULL, 10, n) << "\n";
+            myfile2 << mpz_get_str(NULL, 10, b) << "\n";
+            myfile2 << mpz_get_str(NULL, 10, t) << "\n";
+            myfile2 << "# Public/private RSA Keys : n, b, t\n";
+            myfile2.close();
+        }
         cout << "# OK : key pairs (t n p q a b) stored in " << output << ".priv." << endl;
         cout << "# OK : key pairs (t n b) stored in " << output << ".pub." << endl;
     }
