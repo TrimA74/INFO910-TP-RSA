@@ -73,9 +73,6 @@ int main(int argc, char** argv){
 
     mpz_invert(a,b,tmp);
 
-    gmp_printf("a = %Zd\n", a);
-    gmp_printf("b = %Zd\n", b);
-
     //Check
     mpz_mul(tmp2,a,b);
     mpz_t one, modN;
