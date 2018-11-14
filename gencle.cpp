@@ -75,6 +75,10 @@ int main(int argc, char** argv){
 
     mpz_invert(a,b,tmp);
 
+    //Increment p and q
+    mpz_add_ui(p,p,1);
+    mpz_add_ui(q,q,1);
+
     //Check
     mpz_mul(tmp2,a,b);
     mpz_t one, modN;

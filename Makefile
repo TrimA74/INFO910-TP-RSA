@@ -53,5 +53,9 @@ verifie: $(OBJXX) verifie.cpp
 		$(CXX) -c $(INCDIR) $@.cpp
 		$(LDXX) $@.o $@.o $(LIBDIR) $(LIBSXX) -o $@ -lssl -lcrypto
 
+inverse-modulaire: $(OBJXX) inverse-modulaire.cpp
+		$(CXX) -c $(INCDIR) $@.cpp
+		$(LDXX) $@.o $@.o $(LIBDIR) $(LIBSXX) -o $@
+
 clean:
 		rm -f $(EXEC:=.o) $(EXECXX) $(EXECXX:=.o) $(OBJ)
