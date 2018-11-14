@@ -15,7 +15,8 @@ int main(int argc, char** argv){
         return -1;
     }
 
-    string filename = argv[1];
+    string output = argv[1];
+    output += ".priv";
 
     //Lire le clair sur l'entrée standard
     string line;
@@ -36,9 +37,8 @@ int main(int argc, char** argv){
     mpz_init(block);
     unsigned int t = 0;
 
-    ifstream myfile (filename + ".priv");
-    ofstream fileSigned (filename + ".signe");
-    if (myfile.is_open() && fileSigned.is_open())
+    ifstream myfile (output);
+    if (myfile.is_open())
     {
         getline (myfile,line);
         t = atoi(line.c_str()) / 8;
@@ -50,17 +50,14 @@ int main(int argc, char** argv){
         mpz_set_str(a,line.c_str(),10);
         myfile.close();
 
-        char blockString[t];
+
+        char result[t];
+        size_t rbytes;
+        char* buffer = new char[ t ];
         for(int i=0; i<hashedString.length(); i += t){
-            cout << hashedString.substr(i,t) <<endl;
-            mpz_import(block, t, 1, sizeof(char), 0, 0, hashedString.substr(i,t).c_str());
-
-            mpz_powm(block,block,a,n);
-
-            mpz_get_str(blockString,t,block);
-            fileSigned << blockString << endl;
 
         }
+    }
     /*
         while(rbytes = fread(buffer, sizeof(char), t, sha1ToString(hash))) {
             mpz_import(block, rbytes, 1, sizeof(buffer[0]), 0, 0, buffer);
@@ -75,11 +72,10 @@ int main(int argc, char** argv){
             //On met le block dans le fichier
 
         }*/
-        myfile.close();
-        fileSigned.close();
+/*
     }else
         cout << "Unable to open file";
-
+*/
     cout << sha1ToString(hash) <<endl;
     return 0;
 }
