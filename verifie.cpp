@@ -3,21 +3,23 @@
 //
 #include <iostream>
 #include <fstream>
+#include <cstring>
 #include "gmphelper.cpp"
+#include "sha1tools.cpp"
 
 using namespace std;
 
 
 int main(int argc, char** argv) {
-    if (argc != 2) {
-        cout << "Usage : ./verifie filename" << endl;
+    if (argc != 3) {
+        cout << "Usage : cat message.txt | ./verifie filenameKeys filenameBlocks" << endl;
         return -1;
     }
 
     string pubFileString = argv[1];
     pubFileString += ".pub";
 
-    string signeFileString = argv[1];
+    string signeFileString = argv[2];
     signeFileString += ".signe";
 
 
@@ -42,30 +44,40 @@ int main(int argc, char** argv) {
         pubFile.close();
 
         char result[t];
-        string fullResult;
-        char * buffer;
-        char * hashed;
+        string hashedSigned;
+
+        //On récupère le message déchiffré
+        string plainText = "";
         while(getline(cin,line)){
+            plainText += line + "\n";
+        }
 
-            // todo set hashed with line
+        //On hache le message déchiffré
+        unsigned char hash[SHA_DIGEST_LENGTH];
+        sha1(plainText, hash);
 
-            while(getline(signeFile,line)) {
-                mpz_set_str(block,line.c_str(),10);
+        while(getline(signeFile,line)) {
+            mpz_set_str(block,line.c_str(),10);
 
-                //On chiffre
-                mpz_powm(block, block, b, n);
+            //On chiffre
+            mpz_powm(block, block, b, n);
 
-                mpz_export(result, NULL, 1, sizeof(char), 0, 0, block);
-                fullResult+=result;
+            //On réinitialise le tableau à 0 pour éviter que si l'export ne rempli pas tout le tableau,
+            //on se retrouve avec des valeurs indésirables
+            for(int i=0; i<t; i++)
+                result[i] = 0;
 
-            }
-
-
-            // todo on test si result == hashed
+            mpz_export(result, NULL, 1, sizeof(char), 0, 0, block);
+            for(int i=0; i<t; i++)
+                if((int)result[i] != 0)
+                    hashedSigned+=result[i];
 
         }
-        //cout << "# " << totalRbytes << " bytes read, " << nbBlocks << " blocs read." << endl;
 
+        if(strcmp(hashedSigned.c_str(),sha1ToString(hash).c_str()) == 0)
+            cout << "Verified !" << endl;
+        else
+            cout << "Not verified !" <<endl;
 
     } else
         cout << "Unable to open file";

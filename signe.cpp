@@ -11,7 +11,7 @@ using namespace std;
 
 int main(int argc, char** argv){
     if(argc != 2){
-        cout << "Usage : cat plainText.txt | ./signe filename"<<endl;
+        cout << "Usage : cat plainText.txt | ./signe filenameKeys"<<endl;
         return -1;
     }
 
@@ -24,7 +24,6 @@ int main(int argc, char** argv){
         plainText += line + "\n";
     }
 
-    cout << plainText <<endl;
     //On hache le texte en SHA1
     unsigned char hash[SHA_DIGEST_LENGTH];
     sha1(plainText,hash);
@@ -37,7 +36,7 @@ int main(int argc, char** argv){
     unsigned int t = 0;
 
     ifstream myfile (filename + ".priv");
-    ofstream fileSigned (filename + ".signe");
+    ofstream fileSigned ("message.signe");
     if (myfile.is_open() && fileSigned.is_open())
     {
         getline (myfile,line);
@@ -52,34 +51,17 @@ int main(int argc, char** argv){
 
         char blockString[t];
         for(int i=0; i<hashedString.length(); i += t){
-            cout << hashedString.substr(i,t) <<endl;
             mpz_import(block, t, 1, sizeof(char), 0, 0, hashedString.substr(i,t).c_str());
 
             mpz_powm(block,block,a,n);
 
-            mpz_get_str(blockString,t,block);
+            mpz_get_str(blockString,10,block);
             fileSigned << blockString << endl;
 
         }
-    /*
-        while(rbytes = fread(buffer, sizeof(char), t, sha1ToString(hash))) {
-            mpz_import(block, rbytes, 1, sizeof(buffer[0]), 0, 0, buffer);
-        }*/
-        /*
-        while(getline(cin,line))
-        {
-            mpz_set_str(block,line.c_str(),10);
-            //On dechiffre
-            mpz_powm(block,block,a,n);
-
-            //On met le block dans le fichier
-
-        }*/
-        myfile.close();
         fileSigned.close();
     }else
         cout << "Unable to open file";
 
-    cout << sha1ToString(hash) <<endl;
     return 0;
 }

@@ -9,7 +9,7 @@ SRCXX=gencle.cpp main.cpp chiffre.cpp
 # Vos executables C, par exemple : EXEC=progc
 EXEC=
 # Vos executables C++, par exemple : EXECXX=progcxx
-EXECXX=gencle main chiffre dechiffre signe
+EXECXX=gencle main chiffre dechiffre signe verifie
 ####################################################
 # ne pas toucher
 INCDIR=-I${GMPDIR}/include
@@ -46,6 +46,10 @@ dechiffre: $(OBJXX) dechiffre.cpp
 		$(LDXX) $@.o $@.o $(LIBDIR) $(LIBSXX) -o $@
 
 signe: $(OBJXX) signe.cpp
+		$(CXX) -c $(INCDIR) $@.cpp
+		$(LDXX) $@.o $@.o $(LIBDIR) $(LIBSXX) -o $@ -lssl -lcrypto
+
+verifie: $(OBJXX) verifie.cpp
 		$(CXX) -c $(INCDIR) $@.cpp
 		$(LDXX) $@.o $@.o $(LIBDIR) $(LIBSXX) -o $@ -lssl -lcrypto
 
