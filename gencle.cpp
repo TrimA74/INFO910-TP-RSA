@@ -47,8 +47,10 @@ int main(int argc, char** argv){
     //Generate p and q
     generateRandom(p,min,max);
     generateRandom(q,min,max);
-    //gmpHelper.generateRandom(p,min,max);
-    //gmpHelper.generateRandom(q,min,max);
+
+    // make sure the numbers are prime
+    mpz_nextprime(q,q);
+    mpz_nextprime(p,p);
 
     //n = p*q
     mpz_mul(n,p,q);
