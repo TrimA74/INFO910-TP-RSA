@@ -9,7 +9,7 @@ SRCXX=gencle.cpp main.cpp chiffre.cpp
 # Vos executables C, par exemple : EXEC=progc
 EXEC=
 # Vos executables C++, par exemple : EXECXX=progcxx
-EXECXX=gencle main chiffre dechiffre signe verifie
+EXECXX=gencle main chiffre dechiffre signe verifie inverse-modulaire
 ####################################################
 # ne pas toucher
 INCDIR=-I${GMPDIR}/include
