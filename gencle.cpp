@@ -11,7 +11,7 @@ using namespace std;
 int main(int argc, char** argv){
     if(argc != 3){
         cout << "Usage : ./gencle t output"<<endl;
-        cout << "Example : ./gencle keys will generate keys.priv and keys.pub"<<endl;
+        cout << "Example : ./gencle 32 keys"<<endl;
         return -1;
     }
 
