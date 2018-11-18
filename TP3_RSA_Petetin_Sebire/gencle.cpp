@@ -11,7 +11,7 @@ using namespace std;
 int main(int argc, char** argv){
     if(argc != 3){
         cout << "Usage : ./gencle t output"<<endl;
-        cout << "Example : ./gencle keys will generate keys.priv and keys.pub"<<endl;
+        cout << "Example : ./gencle 32 keys"<<endl;
         return -1;
     }
 
@@ -47,8 +47,10 @@ int main(int argc, char** argv){
     //Generate p and q
     generateRandom(p,min,max);
     generateRandom(q,min,max);
-    //gmpHelper.generateRandom(p,min,max);
-    //gmpHelper.generateRandom(q,min,max);
+
+    // make sure the numbers are prime
+    mpz_nextprime(q,q);
+    mpz_nextprime(p,p);
 
     //n = p*q
     mpz_mul(n,p,q);
@@ -72,6 +74,10 @@ int main(int argc, char** argv){
     //b = 2^16 + 1
 
     mpz_invert(a,b,tmp);
+
+    //Increment p and q
+    mpz_add_ui(p,p,1);
+    mpz_add_ui(q,q,1);
 
     //Check
     mpz_mul(tmp2,a,b);
